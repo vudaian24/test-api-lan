@@ -6,12 +6,12 @@ import helmet from 'helmet';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-
+  
   const config = new DocumentBuilder()
     .setTitle('User CRUD API')
     .setDescription('API for managing users')
     .setVersion('1.0')
-    .build();
+    .build(); 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/swagger', app, document);
 
@@ -33,8 +33,11 @@ async function bootstrap() {
   };
 
   app.enableCors(corsOptions);
-
-  await app.listen(5000);
-  console.log(`Application is running on: http://localhost:${5000}`);
+  
+  return app;
 }
-bootstrap();
+
+module.exports = async () => {
+  const app = await bootstrap();
+  return app.getHttpAdapter().getInstance();
+};
