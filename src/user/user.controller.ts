@@ -11,13 +11,11 @@ export class UserController {
 
   @Post('create')
   @ApiOperation({ summary: 'Tạo một con mèo mới', description:'Tạo một con mèo mới' })
-    @ApiResponse({ status: 201, description: 'Mèo đã được tạo thành công.', type: User })
-    @ApiResponse({ status: 400, description: 'Dữ liệu đầu vào không hợp lệ.' })
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
-  @Get()
+  @Get('search')
   findAll() {
     return this.userService.findAll();
   }
@@ -27,12 +25,12 @@ export class UserController {
     return this.userService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('edit/:id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
   }
