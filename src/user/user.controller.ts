@@ -9,8 +9,8 @@ import { User } from './entities/user.entity';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  @ApiOperation({ summary: 'Tạo một con mèo mới' })
+  @Post('create')
+  @ApiOperation({ summary: 'Tạo một con mèo mới', description:'Tạo một con mèo mới' })
     @ApiResponse({ status: 201, description: 'Mèo đã được tạo thành công.', type: User })
     @ApiResponse({ status: 400, description: 'Dữ liệu đầu vào không hợp lệ.' })
   create(@Body() createUserDto: CreateUserDto) {
