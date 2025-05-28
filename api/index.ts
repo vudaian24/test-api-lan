@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../src/app.module';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import express from 'express';
+import express, { Express } from 'express';
 import helmet from 'helmet';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { ConfigService } from '@nestjs/config';
@@ -13,24 +13,27 @@ const ConfigKey = {
   BASE_PATH: 'BASE_PATH',
   SWAGGER_ENABLED: 'SWAGGER_ENABLED',
 };
+
 const BooleanString = {
   TRUE: 'true',
   FALSE: 'false',
 };
 
-const expressApp = express();
+const expressApp: Express = express();
 let nestApp;
 
 async function bootstrap() {
   if (!nestApp) {
+    // Tạo Nest app với Express adapter
     nestApp = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
 
-    // Middleware security
+    // Middleware bảo mật
     nestApp.use(helmet());
 
+    // Lấy config service
     const configService = nestApp.get(ConfigService);
 
-    // CORS config
+    // Cấu hình CORS
     const whiteList = '*';
     const corsOptions: CorsOptions = {
       origin:
@@ -49,26 +52,29 @@ async function bootstrap() {
       optionsSuccessStatus: 200,
       methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
     };
+
     nestApp.enableCors(corsOptions);
 
-    // Global prefix
+    // Thiết lập global prefix
     nestApp.setGlobalPrefix(configService.get(ConfigKey.BASE_PATH) ?? '');
-    
+
+    // Khởi tạo Nest app trước khi dùng Swagger
     await nestApp.init();
 
-    // Swagger setup (nếu bật)
+    // Nếu bật swagger thì setup swagger
     if (configService.get(ConfigKey.SWAGGER_ENABLED) === BooleanString.TRUE) {
-      const config = new DocumentBuilder()
+      const swaggerConfig = new DocumentBuilder()
         .addBearerAuth()
         .setTitle('Cybereason MDR Mobile App 2.0 project - Platform API')
         .setDescription('Provides RESTful API to internal & external services')
         .setVersion('v1')
         .build();
 
-      const document = SwaggerModule.createDocument(nestApp, config);
+      const document = SwaggerModule.createDocument(nestApp, swaggerConfig);
+
+      // Dùng đúng adapter instance Express từ NestJS
       SwaggerModule.setup('swagger', nestApp.getHttpAdapter().getInstance(), document);
     }
-
   }
 }
 
