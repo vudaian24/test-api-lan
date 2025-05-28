@@ -28,6 +28,7 @@
     "@nestjs/typeorm": "^11.0.0",
     "@vendia/serverless-express": "^4.12.6",
     "class-validator": "^0.14.2",
+    "express": "^5.1.0",
     "helmet": "^8.1.0",
     "mssql": "^11.0.1",
     "reflect-metadata": "^0.2.2",
@@ -60,7 +61,8 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.20.0"
+    "typescript-eslint": "^8.20.0",
+    "webpack": "^5.99.9"
   },
   "jest": {
     "moduleFileExtensions": [
