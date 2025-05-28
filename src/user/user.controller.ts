@@ -10,7 +10,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post('create')
-  @ApiOperation({ summary: 'Tạo một con mèo mới', description:'Tạo một con mèo mới' })
+  @ApiOperation({description:'Tạo một con mèo mới' })
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
