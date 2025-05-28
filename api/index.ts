@@ -13,19 +13,19 @@ async function createNestServer(expressInstance: any) {
     const nestApp = await NestFactory.create(
       AppModule,
       new ExpressAdapter(expressInstance),
-      { 
+      {
         logger: ['error', 'warn', 'log'],
-        cors: true 
+        cors: true
       }
     );
-    
+
     // Phục vụ tệp tĩnh của Swagger
     const swaggerAssets = join(
       require.resolve('swagger-ui-dist'),
       '..'
     );
     nestApp.use('/swagger-static', express.static(swaggerAssets));
-    
+
     // Thiết lập Swagger
     const config = new DocumentBuilder()
       .setTitle('My API')
@@ -33,9 +33,14 @@ async function createNestServer(expressInstance: any) {
       .setVersion('1.0')
       .addBearerAuth()
       .build();
-    
+
     const document = SwaggerModule.createDocument(nestApp, config);
-    
+
+    nestApp.use('/swagger-json', (req, res) => {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(document);
+    });
+
     // Thiết lập Swagger UI với đường dẫn tùy chỉnh cho tệp tĩnh
     SwaggerModule.setup('docs', nestApp, document, {
       customCssUrl: '/swagger-static/swagger-ui.css',
@@ -47,7 +52,7 @@ async function createNestServer(expressInstance: any) {
         persistAuthorization: true,
       },
     });
-    
+
     await nestApp.init();
     app = nestApp;
   }

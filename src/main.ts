@@ -44,7 +44,7 @@ async function bootstrap() {
   // setup prefix of route
   app.setGlobalPrefix(configService.get(ConfigKey.BASE_PATH) ?? '');
 
-  if (configService.get(ConfigKey.SWAGGER_ENABLED) !== BooleanString.TRUE) {
+  if (configService.get(ConfigKey.SWAGGER_ENABLED) == BooleanString.TRUE) {
     const config = new DocumentBuilder()
       .addBearerAuth()
       .setTitle('Cybereason MDR Mobile App 2.0 project - Platform API')
@@ -53,7 +53,13 @@ async function bootstrap() {
       )
       .setVersion('v1')
       .build();
+
     const document = SwaggerModule.createDocument(app, config);
+    app.use('/swagger-json', (req, res) => {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(document);
+    });
+    
     SwaggerModule.setup('swagger', app, document);
   }
 
