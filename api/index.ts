@@ -3,6 +3,7 @@ import { AppModule } from '../src/app.module';
 import { ExpressAdapter } from '@nestjs/platform-express';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import express from 'express';
+import { join } from 'path';
 
 const server = express();
 let app: any;
@@ -18,6 +19,13 @@ async function createNestServer(expressInstance: any) {
       }
     );
     
+    // Phục vụ tệp tĩnh của Swagger
+    const swaggerAssets = join(
+      require.resolve('swagger-ui-dist'),
+      '..'
+    );
+    nestApp.use('/swagger-static', express.static(swaggerAssets));
+    
     // Thiết lập Swagger
     const config = new DocumentBuilder()
       .setTitle('My API')
@@ -28,12 +36,16 @@ async function createNestServer(expressInstance: any) {
     
     const document = SwaggerModule.createDocument(nestApp, config);
     
-    // Thiết lập Swagger UI với options tùy chỉnh
-    SwaggerModule.setup('swagger', nestApp, document, {
+    // Thiết lập Swagger UI với đường dẫn tùy chỉnh cho tệp tĩnh
+    SwaggerModule.setup('docs', nestApp, document, {
+      customCssUrl: '/swagger-static/swagger-ui.css',
+      customJs: [
+        '/swagger-static/swagger-ui-bundle.js',
+        '/swagger-static/swagger-ui-standalone-preset.js'
+      ],
       swaggerOptions: {
         persistAuthorization: true,
       },
-      customSiteTitle: 'My API Docs',
     });
     
     await nestApp.init();

@@ -6270,7 +6270,7 @@ swagger-ui-dist@5.21.0:
   dependencies:
     "@scarf/scarf" "=1.4.0"
 
-swagger-ui-dist@>=5.0.0:
+swagger-ui-dist@>=5.0.0, swagger-ui-dist@^5.22.0:
   version "5.22.0"
   resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-5.22.0.tgz#8280cfa9659d90cf6f682c76f7e792b0da939946"
   integrity sha512-8YlCSxiyb8uPFa7qoB1lRHYr1PBbT1NuV9RvQdFFPFPudRBTPf9coU5jl02KhzvrtmTEw4jXRgb0kg8pJvVuWQ==
