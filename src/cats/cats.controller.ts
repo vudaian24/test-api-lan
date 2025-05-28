@@ -6,6 +6,7 @@ import { Cat } from './cats.entity';
 import { HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiResponseStructure } from 'src/common/interfaces/api-response.interface';
 
+@ApiTags('Cats')
 @Controller('cats')
 export class CatsController {
   constructor(private readonly catsService: CatsService) { }
