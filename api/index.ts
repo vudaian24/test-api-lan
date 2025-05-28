@@ -1,61 +1,23 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from '../src/app.module';
-import { ExpressAdapter } from '@nestjs/platform-express';
-import express, { Express } from 'express';
-import helmet from 'helmet';
-import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
-import { ConfigService } from '@nestjs/config';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+const { createServer, proxy } = require('aws-serverless-express');
+const express = require('express');
+const { NestFactory } = require('@nestjs/core');
+const { AppModule } = require('../../dist/app.module');
+const { ExpressAdapter } = require('@nestjs/platform-express');
 
-const expressApp: Express = express();
-let nestApp;
+const server = express();
 
-async function bootstrap() {
-  if (!nestApp) {
-    nestApp = await NestFactory.create(AppModule, new ExpressAdapter(expressApp));
+let cachedServer;
 
-    nestApp.use(helmet());
-
-    const configService = nestApp.get(ConfigService);
-
-    const corsOptions: CorsOptions = {
-      origin: '*',
-      allowedHeaders: [
-        'Content-Type',
-        'Authorization',
-        'Language',
-        'X-Timezone',
-        'X-Timezone-Name',
-        'X-Mssp-Id',
-        'X-Organization-Id',
-      ],
-      optionsSuccessStatus: 200,
-      methods: ['GET', 'PUT', 'POST', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
-    };
-    nestApp.enableCors(corsOptions);
-
-    nestApp.setGlobalPrefix(configService.get('BASE_PATH') ?? '');
-
-    // Đây là bước cực kỳ quan trọng: init app trước khi dùng swagger
-    await nestApp.init();
-
-    if (configService.get('SWAGGER_ENABLED') === 'true') {
-      const swaggerConfig = new DocumentBuilder()
-        .addBearerAuth()
-        .setTitle('API Documentation')
-        .setDescription('API description')
-        .setVersion('1.0')
-        .build();
-
-      const document = SwaggerModule.createDocument(nestApp, swaggerConfig);
-
-      // Lấy instance express app đúng cách từ adapter
-      SwaggerModule.setup('swagger', nestApp.getHttpAdapter().getInstance(), document);
-    }
+async function bootstrapServer() {
+  if (!cachedServer) {
+    const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
+    await app.init();
+    cachedServer = server;
   }
+  return cachedServer;
 }
 
-export default async function handler(req, res) {
-  await bootstrap();
-  expressApp(req, res);
-}
+module.exports = async (req, res) => {
+  const server = await bootstrapServer();
+  server(req, res);
+};
