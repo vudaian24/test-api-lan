@@ -39,5 +39,6 @@ async function bootstrap() {
 
 module.exports = async () => {
   const app = await bootstrap();
+  await app.init();
   return app.getHttpAdapter().getInstance();
 };
