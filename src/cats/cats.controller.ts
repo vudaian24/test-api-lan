@@ -34,7 +34,7 @@ export class CatsController {
     return this.handleResponse(HttpStatus.CREATED, 'Mèo đã được tạo thành công.', newCat);
   }
 
-  @Get()
+  @Get('get-list')
   @ApiOperation({ summary: 'Lấy danh sách tất cả mèo' })
   @ApiResponse({ status: 200, description: 'Trả về danh sách mèo.', type: [Cat] })
   async findAll(): Promise<ApiResponseStructure<Cat[]>> {
