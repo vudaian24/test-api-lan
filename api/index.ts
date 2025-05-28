@@ -53,6 +53,8 @@ async function bootstrap() {
 
     // Global prefix
     nestApp.setGlobalPrefix(configService.get(ConfigKey.BASE_PATH) ?? '');
+    
+    await nestApp.init();
 
     // Swagger setup (nếu bật)
     if (configService.get(ConfigKey.SWAGGER_ENABLED) === BooleanString.TRUE) {
@@ -67,7 +69,6 @@ async function bootstrap() {
       SwaggerModule.setup('swagger', nestApp.getHttpAdapter().getInstance(), document);
     }
 
-    await nestApp.init();
   }
 }
 
