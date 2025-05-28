@@ -1,34 +1,38 @@
-import express from 'express';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../src/app.module';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { INestApplication } from '@nestjs/common';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import express from 'express';
 
 const server = express();
-let cachedApp: INestApplication | null = null;
 
-async function bootstrap() {
-  if (!cachedApp) {
-    const app = await NestFactory.create(AppModule, new ExpressAdapter(server));
+let app: any;
 
-    // Cấu hình Swagger
+async function createNestServer(expressInstance: any) {
+  if (!app) {
+    app = await NestFactory.create(
+      AppModule,
+      new ExpressAdapter(expressInstance),
+    );
+    
+    // Configure Swagger
     const config = new DocumentBuilder()
       .setTitle('API Documentation')
-      .setDescription('API description')
+      .setDescription('The API description')
       .setVersion('1.0')
+      .addBearerAuth()
       .build();
-
+    
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('swagger', app, document);
-
+    SwaggerModule.setup('api/docs', app, document);
+    
+    app.enableCors();
     await app.init();
-    cachedApp = app;
   }
-  return cachedApp;
+  return app;
 }
 
-export default async function handler(req, res) {
-  await bootstrap();
+export default async (req: any, res: any) => {
+  await createNestServer(server);
   server(req, res);
-}
+};

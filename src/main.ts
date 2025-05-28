@@ -59,4 +59,9 @@ async function bootstrap() {
 
   await app.listen(configService.get(ConfigKey.PORT) || 3000);
 }
-bootstrap();
+
+if (process.env.NODE_ENV !== 'production') {
+  bootstrap();
+}
+
+export { bootstrap };
