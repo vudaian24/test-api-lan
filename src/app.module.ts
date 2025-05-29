@@ -14,11 +14,11 @@ import { UserModule } from './user/user.module';
     }),
     TypeOrmModule.forRoot({
       type: 'mssql',
-      host: 'database-sqlserver-db.crcqkoqqgdtl.ap-southeast-1.rds.amazonaws.com',
-      port: 1433,
-      username: 'admin',
-      password: 'An-24012002',
-      database: 'cats',
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT ? +process.env.DB_PORT : 1433,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
       autoLoadEntities: true,
       synchronize: true,
       extra: {
