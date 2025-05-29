@@ -14,11 +14,11 @@ import { UserModule } from './user/user.module';
     }),
     TypeOrmModule.forRoot({
       type: 'mssql',
-      host: process.env.DB_HOST,
-      port: process.env.DB_PORT ? +process.env.DB_PORT : 1433,
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
+      host: config.get<string>('DB_HOST'),
+      port: config.get<number>('DB_PORT'),
+      username: config.get<string>('DB_USERNAME'),
+      password: config.get<string>('DB_PASSWORD'),
+      database: config.get<string>('DB_DATABASE'),
       autoLoadEntities: true,
       synchronize: true,
       extra: {
