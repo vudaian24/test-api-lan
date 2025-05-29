@@ -12,21 +12,26 @@ import { UserModule } from './user/user.module';
       envFilePath: '.env',
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'mssql',
-      host: config.get<string>('DB_HOST'),
-      port: config.get<number>('DB_PORT'),
-      username: config.get<string>('DB_USERNAME'),
-      password: config.get<string>('DB_PASSWORD'),
-      database: config.get<string>('DB_DATABASE'),
-      autoLoadEntities: true,
-      synchronize: true,
-      extra: {
-        options: {
-          encrypt: true,
-          trustServerCertificate: true
-        }
-      }
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'mssql',
+        host: config.get<string>('DB_HOST'),
+        port: config.get<number>('DB_PORT'),
+        username: config.get<string>('DB_USERNAME'),
+        password: config.get<string>('DB_PASSWORD'),
+        database: config.get<string>('DB_DATABASE'),
+        synchronize: true,
+        autoLoadEntities: true,
+        extra: {
+          requestTimeout: config.get<number>('DB_TIMEOUT') || 15000,
+          options: {
+            encrypt: true,
+            trustServerCertificate: true,
+          },
+        },
+      }),
     }),
     CatsModule,
     UserModule,
