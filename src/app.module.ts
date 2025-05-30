@@ -18,14 +18,14 @@ import { UserModule } from './user/user.module';
       useFactory: (config: ConfigService) => ({
         type: 'mssql',
         host: config.get<string>('DB_HOST'),
-        port: parseInt(config.get('DB_PORT') || '1433', 10)
+        port: 1433,
         username: config.get<string>('DB_USERNAME'),
         password: config.get<string>('DB_PASSWORD'),
         database: config.get<string>('DB_DATABASE'),
         synchronize: true,
         autoLoadEntities: true,
         extra: {
-          requestTimeout: config.get<number>('DB_TIMEOUT') || 15000,
+          requestTimeout: 20000,
           options: {
             encrypt: true,
             trustServerCertificate: true,
