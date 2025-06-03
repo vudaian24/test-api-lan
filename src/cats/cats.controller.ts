@@ -29,6 +29,12 @@ export class CatsController {
     return this.handleResponse(HttpStatus.CREATED, 'Mèo đã được tạo thành công.', newCat);
   }
 
+  @Get('get-list')
+  async findAll(): Promise<ApiResponseStructure<Cat[]>> {
+    const cats = await this.catsService.findAll();
+    return this.handleResponse(HttpStatus.OK, 'Lấy danh sách mèo thành công.', cats);
+  }
+
   @Get('search/:id')
   async findOne(@Param('id') id: string): Promise<ApiResponseStructure<Cat>> {
     const cat = await this.catsService.findOne(+id);
