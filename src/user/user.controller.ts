@@ -9,7 +9,7 @@ import { User } from './entities/user.entity';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('create')
+  @Post('create-2')
   @ApiOperation({description:'Tạo một con mèo mới' })
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
