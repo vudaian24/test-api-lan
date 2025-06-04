@@ -9,7 +9,7 @@ import { User } from './entities/user.entity';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post('create-2')
+  @Post('create')
   @ApiOperation({description:'Tạo một con mèo mới' })
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
@@ -30,7 +30,7 @@ export class UserController {
     return this.userService.update(+id, updateUserDto);
   }
 
-  @Delete('delete-2/:id')
+  @Delete('delete/:id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
   }
