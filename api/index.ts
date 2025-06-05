@@ -20,8 +20,7 @@ async function createNestServer(expressInstance: any) {
       }
     );
 
-    const configService = nestApp.get(ConfigService);
-    const swaggerEnabled = configService.get<string>('SWAGGER_ENABLED') === 'true'
+    const swaggerEnabled = 'true'
 
     if (swaggerEnabled) {
       // Phục vụ tệp tĩnh của Swagger
