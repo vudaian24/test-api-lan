@@ -20,7 +20,7 @@ async function createNestServer(expressInstance: any) {
       }
     );
 
-    const swaggerEnabled = 'true'
+    const swaggerEnabled = true
 
     if (swaggerEnabled) {
       // Phục vụ tệp tĩnh của Swagger
